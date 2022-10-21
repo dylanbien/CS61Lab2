@@ -1,9 +1,10 @@
-/*
-select the schema
-*/
 use F003WX1_db;
 
+
+
+-- -------------------------
 -- JOURNAL, ISSUES, & ICODES
+-- -------------------------
 
 INSERT INTO Journal () VALUES (null);
 
@@ -43,7 +44,7 @@ INSERT INTO ICode (Interest) VALUES
 ('Teletraffic engineering'),('Usability engineering'),('Web engineering'),('Systems engineering'),('Baking');
 
 
---  All ICodes are within Scope of the Journal, except (125, 'Baking') -- 
+-- All ICodes are within Scope of the Journal, except (125, 'Baking') -- 
 
 INSERT INTO Scope (Journal_idJournal, ICode_ICode) VALUES
 (1, 1),(1, 2),(1, 3),(1, 4),(1, 5),(1, 6),(1, 7),(1, 8),(1, 9),(1, 10),(1, 11),(1, 12),(1, 13),(1, 14),(1, 15),(1, 16),
@@ -56,7 +57,10 @@ INSERT INTO Scope (Journal_idJournal, ICode_ICode) VALUES
 (1, 113),(1, 114),(1, 115),(1, 116),(1, 117),(1, 118),(1, 119),(1, 120),(1, 121),(1, 122),(1, 123),(1, 124);
 
 
+
+-- -----
 -- USERS
+-- -----
 
 INSERT INTO Users (FName, LName) VALUES
   ('Steven','Hart'),
@@ -71,13 +75,13 @@ INSERT INTO Users (FName, LName) VALUES
   ('Roth','Stevens');
 
 
---  Editors -- 
+-- Editors -- 
 
 INSERT INTO Editor (Users_idEditor) VALUES
 (1),(2),(3);
 
 
---  Authors -- 
+-- Authors -- 
 
 INSERT INTO Author (Users_idAuthor, Email, Affiliation) VALUES
 (4, 'ody.hutch@dartmouth.edu', 'Dartmouth College'),
@@ -85,7 +89,7 @@ INSERT INTO Author (Users_idAuthor, Email, Affiliation) VALUES
 (6, 'avargas6@stanford.edu', 'Stanford University');
 
 
---  Reviewers -- 
+-- Reviewers -- 
 
 INSERT INTO Reviewer (Users_idReviewer, Email, Affiliation) VALUES
 (7, 'zorita.nguyen@cornell.edu', 'Cornell University'),
@@ -94,7 +98,7 @@ INSERT INTO Reviewer (Users_idReviewer, Email, Affiliation) VALUES
 (10, 'stevens.roth@mit.edu', 'Massachusetts Institute of Technology');
 
 
---  Each Reviewer has three ICodes, only ICodes 44, 50, 81 have three Reviewers -- 
+-- Each Reviewer has three ICodes, only ICodes 44, 50, 81 have three Reviewers -- 
 
 INSERT INTO ReviewerGroup (Reviewer_Users_idReviewer, ICode_ICode) VALUES
 (7, 44), (7, 81), (7, 50), 
@@ -104,10 +108,11 @@ INSERT INTO ReviewerGroup (Reviewer_Users_idReviewer, ICode_ICode) VALUES
 
 
 
--- MANUSCRIPTS 
+-- -----------
+-- MANUSCRIPTS
+-- ----------- 
 
-
---  published issue 2023-2 -- 
+-- published issue 2023-2 -- 
 
 INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, ManStatus, StatusTimestamp, Editor_Users_idEditor, Issue_idIssue, NumPages, BeginningPage) VALUES
 ('eget massa. Suspendisse eleifend.',5,null,50,'published','2023-04-30 00:11:42',3,'2023-2',29,1),
@@ -122,13 +127,13 @@ INSERT INTO Review (Reviewer_Users_idReviewer, Manuscript_idManuscript, Assigned
 (7,4,'2022-06-26 01:54:36','2023-07-27 13:33:08',7,8,8,9,'accept'),(8,4,'2022-06-26 01:54:36','2023-03-06 10:44:16',9,9,9,7,'accept'),(9,4,'2022-06-26 01:54:36','2022-08-12 02:01:01',9,9,9,10,'accept');
 
 
---  scheduled for publication issue 2023-3 -- 
+-- scheduled for publication issue 2023-3 -- 
 
 INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, ManStatus, StatusTimestamp, Editor_Users_idEditor, Issue_idIssue, NumPages, BeginningPage) VALUES
 ('libero. Morbi accumsan laoreet ipsum. Curabitur',4,'Francesca Mathews, Jamalia Ratliff',50,'scheduled for publication','2023-01-23 02:16:17',2,'2023-3',16,1),
-('lorem, eget',4,'Jamalia Ratliff',50,'scheduled for publication','2023-01-23 02:16:17',1,'2023-3',10,17),
+('lorem, eget',4,'Oscar Newton, Jamalia Ratliff',50,'scheduled for publication','2023-01-23 02:16:17',1,'2023-3',10,17),
 ('habitant morbi tristique',5,'Charde Carlson',44,'scheduled for publication','2023-01-23 02:16:17',2,'2023-3',11,28),
-('sapien, cursus in, hendrerit consectetuer,',6,'Dalton Combs, Price Lopez',81,'scheduled for publication','2023-01-23 02:16:17',2,'2023-3',20,40),
+('sapien, cursus in, hendrerit consectetuer,',6,'Dalton Combs, Odysseus Hutchinson, Price Lopez',81,'scheduled for publication','2023-01-23 02:16:17',2,'2023-3',20,40),
 ('ipsum cursus',5,'Eagan Zamora, Noelle Beach',81,'scheduled for publication','2023-01-23 02:16:17',2,'2023-3',7,61),
 ('amet massa. Quisque',6,'Adria Garrsion, Orla Norman',81,'scheduled for publication','2023-01-23 02:16:17',3,'2023-3',13,68);
 
@@ -141,21 +146,21 @@ INSERT INTO Review (Reviewer_Users_idReviewer, Manuscript_idManuscript, Assigned
 (7,10,'2021-10-26 11:01:14','2022-12-04 19:19:00',9,9,9,8,'accept'),(8,10,'2021-01-12 12:55:57','2022-10-01 15:39:08',8,10,9,9,'accept'),(10,10,'2022-06-26 01:39:05','2022-08-06 12:13:23',9,8,9,9,'accept');
 
 
---  ready manuscripts not scheduled -- 
+-- ready manuscripts not scheduled -- 
 
 INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, ManStatus, StatusTimestamp, Editor_Users_idEditor, NumPages) VALUES
 ('Donec at arcu.',5,'Noelle Beach',81,'ready','2023-08-01 02:48:58',2,22),
-('In mi pede, nonummy',4,'Jamalia Ratliff',50,'ready','2023-08-16 05:57:28',1,9);
+('In mi pede, nonummy',4,'Oscar Newton, Jamalia Ratliff',50,'ready','2023-08-16 05:57:28',1,9);
 
 INSERT INTO Review (Reviewer_Users_idReviewer, Manuscript_idManuscript, AssignedTimestamp, SubmittedTimestamp, AScore, CScore, MScore, EScore, Recommendation) VALUES
 (7,11,'2022-08-11 04:10:04','2022-08-11 09:13:51',9,9,9,8,'accept'),(8,11,'2021-09-28 04:13:40','2023-01-15 08:47:43',8,8,9,9,'accept'),(10,11,'2022-09-17 22:23:43','2022-12-22 13:31:22',8,7,8,7,'accept'),
 (7,12,'2021-02-21 10:09:35','2022-11-06 17:43:53',10,7,8,8,'accept'),(8,12,'2022-03-17 17:44:38','2023-01-23 03:54:33',8,9,9,9,'accept'),(9,12,'2021-09-22 10:32:41','2021-12-26 14:14:24',9,10,8,9,'accept');
 
 
---  manuscripts in typesetting -- 
+-- manuscripts in typesetting -- 
 
 INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, ManStatus, StatusTimestamp, Editor_Users_idEditor) VALUES 
-('tellus lorem eu',6,'Orla Norman',81,'in typesetting','2023-03-12 18:18:55',3),
+('tellus lorem eu',6,'Oscar Newton, Orla Norman',81,'in typesetting','2023-03-12 18:18:55',3),
 ('lectus sit amet',4,null,50,'in typesetting','2022-12-17 12:34:11',2);
 
 INSERT INTO Review (Reviewer_Users_idReviewer, Manuscript_idManuscript, AssignedTimestamp, SubmittedTimestamp, AScore, CScore, MScore, EScore, Recommendation) VALUES
@@ -163,18 +168,18 @@ INSERT INTO Review (Reviewer_Users_idReviewer, Manuscript_idManuscript, Assigned
 (7,14,'2020-11-28 17:50:32','2022-12-23 10:56:42',9,9,7,9,'accept'),(8,14,'2020-11-15 03:56:16','2021-12-22 16:52:44',8,9,8,10,'accept'),(9,14,'2022-02-06 13:07:11','2022-02-11 07:10:17',7,8,10,8,'accept');
 
 
---  accepted manuscripts to be typeset -- 
+-- accepted manuscripts to be typeset -- 
 
 INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, ManStatus, StatusTimestamp, Editor_Users_idEditor) VALUES 
 ('non, vestibulum nec, euismod in, dolor. Fusce feugiat',5,'Stuart Ortega',44,'accepted','2022-09-29 07:04:15',3),
-('risus. Nunc ac sem ut dolor',5,'Charde Carlson, Bianca Conway',44,'accepted','2021-10-27 14:31:28',1);
+('risus. Nunc ac sem ut dolor',5,'Charde Carlson, Odysseus Hutchinson, Bianca Conway',44,'accepted','2021-10-27 14:31:28',1);
 
 INSERT INTO Review (Reviewer_Users_idReviewer, Manuscript_idManuscript, AssignedTimestamp, SubmittedTimestamp, AScore, CScore, MScore, EScore, Recommendation) VALUES
 (7,15,'2020-02-17 11:24:20','2021-04-05 05:53:18',7,8,10,9,'accept'),(9,15,'2020-12-31 15:06:08','2021-02-28 06:57:38',7,10,10,8,'accept'),(10,15,'2020-12-01 11:49:57','2022-09-29 07:04:15',10,9,7,9,'accept'),
 (7,16,'2020-11-03 11:31:53','2021-10-18 18:28:41',9,10,8,8,'accept'),(9,16,'2020-11-20 07:08:34','2021-05-23 08:57:50',7,8,8,8,'accept'),(10,16,'2021-02-04 14:13:43','2021-10-27 14:31:28',8,7,8,8,'accept');
 
 
---  reviewed manuscripts rejected -- 
+-- reviewed manuscripts rejected -- 
 
 INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, ManStatus, StatusTimestamp, Editor_Users_idEditor) VALUES 
 ('massa non',5,'Stuart Ortega',44,'rejected','2023-04-10 19:45:26',1),
@@ -185,32 +190,32 @@ INSERT INTO Review (Reviewer_Users_idReviewer, Manuscript_idManuscript, Assigned
 (7,18,'2020-03-16 04:37:21','2021-08-26 04:17:49',3,4,6,2,'reject'),(8,18,'2021-04-07 01:56:12','2021-10-21 20:20:54',3,2,3,2,'reject'),(10,18,'2021-07-24 20:51:10','2022-09-09 15:42:27',4,2,5,4,'reject');
 
 
---  manuscripts under review -- 
+-- manuscripts under review -- 
 
 INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, ManStatus, StatusTimestamp, Editor_Users_idEditor) VALUES 
-('Quisque nonummy',5,null,81,'under review','2023-05-01 05:20:15',2),
-('Nam ligula elit, pretium et, rutrum',5,'Eagan Zamora',44,'under review','2022-05-02 12:05:50',1);
+('Quisque nonummy',5,'Odysseus Hutchinson',81,'under review','2023-05-01 05:20:15',2),
+('Nam ligula elit, pretium et, rutrum',5,'Amal Varga, Eagan Zamora',44,'under review','2022-05-02 12:05:50',1);
 
 INSERT INTO Review (Reviewer_Users_idReviewer, Manuscript_idManuscript, AssignedTimestamp) VALUES
 (7,19,'2023-05-01 05:20:15'),(8,19,'2023-05-01 05:20:15'),(10,19,'2023-05-01 05:20:15'),
 (7,20,'2022-05-02 12:05:50'),(9,20,'2022-05-02 12:05:50'),(10,20,'2022-05-02 12:05:50');
 
 
---  received manuscripts not assigned -- 
+-- received manuscripts not assigned -- 
 
 INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, ManStatus, StatusTimestamp, Editor_Users_idEditor) VALUES 
 ('Phasellus elit pede, malesuada vel',4,'Francesca Mathews, Jamalia Ratliff',50,'received','2022-03-26 01:31:26',3),
 ('ligula tortor, dictum eu, placerat',6,'Adria Garrison',81,'received','2023-05-09 12:42:37',null);
 
 
---  auto-rejected manuscripts (ICode does not have enough Reviewers, ICode outside Scope) -- 
+-- auto-rejected manuscripts (ICode does not have enough Reviewers, ICode outside Scope) -- 
 
 INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, ManStatus, StatusTimestamp, Editor_Users_idEditor) VALUES 
-('risus. Nunc ac sem ut dolor dapibus gravida',5,'Eagan Zamora, Charde Carlson, Bianca Conway, Noelle Beach',23,'rejected','2023-01-01 00:56:19',1),
+('risus. Nunc ac sem ut dolor dapibus gravida',5,'Eagan Zamora, Charde Carlson, Bianca Conway, Noelle Beach, Amal Varga',23,'rejected','2023-01-01 00:56:19',1),
 ('amet diam eu dolor egestas rhoncus. Proin nisl sem,',6,'Dalton Combs, Price Lopez',125,'rejected','2022-11-17 05:50:31',2);
 
 
---  received manuscripts to be auto-rejected (ICode does not have enough Reviewers, ICode outside Scope) -- 
+-- received manuscripts to be auto-rejected (ICode does not have enough Reviewers, ICode outside Scope) -- 
 
 INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, ManStatus, StatusTimestamp, Editor_Users_idEditor) VALUES 
 ('quis urna. Nunc quis arcu vel quam dignissim pharetra.',5,'Charde Carlson, Noelle Beach',53,'received','2021-12-26 21:45:56',2),
