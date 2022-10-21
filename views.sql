@@ -63,7 +63,7 @@ CREATE VIEW ReviewQueue AS
   INNER JOIN Manuscript on Author.Users_idAuthor = Manuscript.Author_Users_idAuthor 
   LEFT JOIN 
     ( -- Combine reviewers for a single manuscript
-        SELECT Manuscript_idManuscript, GROUP_CONCAT(FName, ' ', LName) as Reviewers
+        SELECT Manuscript_idManuscript, GROUP_CONCAT(FName, ' ', LName SEPARATOR ', ') as Reviewers
           FROM Users
           INNER JOIN Reviewer ON Users.idUser = Reviewer.Users_idReviewer
           INNER JOIN Review ON Review.Reviewer_Users_idReviewer = Reviewer.Users_idReviewer
