@@ -1,5 +1,6 @@
-
-
+/*
+select the schema
+*/
 use F003WX1_db;
 
 -- JOURNAL, ISSUES, & ICODES
