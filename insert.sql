@@ -203,9 +203,9 @@ INSERT INTO Review (Reviewer_Users_idReviewer, Manuscript_idManuscript, Assigned
 
 -- received manuscripts not assigned -- 
 
-INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, ManStatus, StatusTimestamp, Editor_Users_idEditor) VALUES 
-('Phasellus elit pede, malesuada vel',4,'Francesca Mathews, Jamalia Ratliff',50,'received','2022-03-26 01:31:26',3),
-('ligula tortor, dictum eu, placerat',6,'Adria Garrison',81,'received','2023-05-09 12:42:37',null);
+INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, StatusTimestamp, Editor_Users_idEditor) VALUES 
+('Phasellus elit pede, malesuada vel',4,'Francesca Mathews, Jamalia Ratliff',50,'2022-03-26 01:31:26',3),
+('ligula tortor, dictum eu, placerat',6,'Adria Garrison',81,'2023-05-09 12:42:37',null);
 
 
 -- auto-rejected manuscripts (ICode does not have enough Reviewers, ICode outside Scope) -- 
@@ -217,6 +217,6 @@ INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, Ma
 
 -- received manuscripts to be auto-rejected (ICode does not have enough Reviewers, ICode outside Scope) -- 
 
-INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, ManStatus, StatusTimestamp, Editor_Users_idEditor) VALUES 
-('quis urna. Nunc quis arcu vel quam dignissim pharetra.',5,'Charde Carlson, Noelle Beach',53,'received','2021-12-26 21:45:56',2),
-('augue ut lacus. Nulla tincidunt, neque',5,'Bianca Conway',125,'received','2023-04-10 06:56:27',1);
+INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, StatusTimestamp, Editor_Users_idEditor) VALUES 
+('quis urna. Nunc quis arcu vel quam dignissim pharetra.',5,'Charde Carlson, Noelle Beach',53,'2021-12-26 21:45:56',2),
+('augue ut lacus. Nulla tincidunt, neque',5,'Bianca Conway',125,'2023-04-10 06:56:27',1);
