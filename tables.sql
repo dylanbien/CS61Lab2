@@ -32,7 +32,7 @@ CREATE TABLE Journal (
 CREATE TABLE Issue (
   idIssue VARCHAR(6) NOT NULL,
   Journal_idJournal INT UNSIGNED NOT NULL,
-  PublicationDate DATETIME NOT NULL,
+  PublicationDate DATETIME,
   PRIMARY KEY (idIssue),
   FOREIGN KEY (Journal_idJournal) REFERENCES Journal (idJournal)
 );
@@ -41,9 +41,9 @@ CREATE TABLE Issue (
 -- Table ICODE
 -- -----------------------------------------------------
 CREATE TABLE ICode (
-  Code INT NOT NULL AUTO_INCREMENT,
+  ICode INT NOT NULL AUTO_INCREMENT,
   Interest VARCHAR(64) NOT NULL,
-  PRIMARY KEY (Code)
+  PRIMARY KEY (ICode)
 );
 
 -- -----------------------------------------------------
@@ -51,10 +51,10 @@ CREATE TABLE ICode (
 -- -----------------------------------------------------
 CREATE TABLE Scope (
   Journal_idJournal INT UNSIGNED NOT NULL,
-  ICode_Code INT NOT NULL,
-  PRIMARY KEY (Journal_idJournal, ICode_Code),
+  ICode_ICode INT NOT NULL,
+  PRIMARY KEY (Journal_idJournal, ICode_ICode),
   FOREIGN KEY (Journal_idJournal) REFERENCES Journal (idJournal),
-  FOREIGN KEY (ICode_Code) REFERENCES ICode (Code)
+  FOREIGN KEY (ICode_ICode) REFERENCES ICode (ICode)
 );
 
 -- -----------------------------------------------------
@@ -71,31 +71,31 @@ CREATE TABLE Users (
 -- Table EDITOR
 -- -----------------------------------------------------
 CREATE TABLE Editor (
-  User_idEditor INT UNSIGNED NOT NULL,
-  PRIMARY KEY (User_idEditor),
-  FOREIGN KEY (User_idEditor) REFERENCES Users (idUser)
+  Users_idEditor INT UNSIGNED NOT NULL,
+  PRIMARY KEY (Users_idEditor),
+  FOREIGN KEY (Users_idEditor) REFERENCES Users (idUser)
 );
 
 -- -----------------------------------------------------
 -- Table AUTHOR
 -- -----------------------------------------------------
 CREATE TABLE Author (
-  User_idAuthor INT UNSIGNED NOT NULL,
+  Users_idAuthor INT UNSIGNED NOT NULL,
   Email VARCHAR(100) NOT NULL,
   Affiliation VARCHAR(45) NOT NULL,
-  PRIMARY KEY (User_idAuthor),
-  FOREIGN KEY (User_idAuthor) REFERENCES Users(idUser)
+  PRIMARY KEY (Users_idAuthor),
+  FOREIGN KEY (Users_idAuthor) REFERENCES Users(idUser)
 );
 
 -- -----------------------------------------------------
 -- Table REVIEWER
 -- -----------------------------------------------------
 CREATE TABLE Reviewer (
-  User_idReviewer INT UNSIGNED NOT NULL,
+  Users_idReviewer INT UNSIGNED NOT NULL,
   Email VARCHAR(100) NOT NULL,
   Affiliation VARCHAR(45) NOT NULL,
-  PRIMARY KEY (User_idReviewer),
-  FOREIGN KEY (User_idReviewer) REFERENCES Users (idUser)
+  PRIMARY KEY (Users_idReviewer),
+  FOREIGN KEY (Users_idReviewer) REFERENCES Users (idUser)
   );
 
 
@@ -103,33 +103,33 @@ CREATE TABLE Reviewer (
 -- Table REVIEWERGROUP
 -- -----------------------------------------------------
 CREATE TABLE ReviewerGroup (
-  Reviewer_User_idReviewer1 INT UNSIGNED NOT NULL,
-  ICode_Code INT NOT NULL,
-  PRIMARY KEY (Reviewer_User_idReviewer1, ICode_Code),
-  FOREIGN KEY (ICode_Code) REFERENCES ICode (Code),
-  FOREIGN KEY (Reviewer_User_idReviewer1) REFERENCES Reviewer (User_idReviewer)
+  Reviewer_Users_idReviewer INT UNSIGNED NOT NULL,
+  ICode_ICode INT NOT NULL,
+  PRIMARY KEY (Reviewer_Users_idReviewer, ICode_ICode),
+  FOREIGN KEY (ICode_ICode) REFERENCES ICode (ICode),
+  FOREIGN KEY (Reviewer_Users_idReviewer) REFERENCES Reviewer (Users_idReviewer)
 );
 
 -- -----------------------------------------------------
 -- Table MANUSCRIPT
 -- -----------------------------------------------------
 CREATE TABLE Manuscript (
-  idManuscript INT NOT NULL,
+  idManuscript INT NOT NULL AUTO_INCREMENT,
   Title VARCHAR(180) NOT NULL,
-  Author_User_idAuthor INT UNSIGNED NOT NULL,
+  Author_Users_idAuthor INT UNSIGNED NOT NULL,
   CoAuthors VARCHAR(280) NULL,
-  ICode_Code INT NOT NULL,
-  Status VARCHAR(45) NOT NULL DEFAULT 'Received',
+  ICode_ICode INT NOT NULL,
+  ManStatus VARCHAR(45) NOT NULL DEFAULT 'Received',
   StatusTimestamp DATETIME NOT NULL,
-  Editor_User_idEditor INT UNSIGNED NULL,
+  Editor_Users_idEditor INT UNSIGNED NULL,
   Issue_idIssue VARCHAR(6) NULL,
   NumPages INT UNSIGNED NULL,
   BeginningPage INT UNSIGNED NULL,
   PRIMARY KEY (idManuscript),
-  FOREIGN KEY (ICode_Code) REFERENCES ICode (Code),
+  FOREIGN KEY (ICode_ICode) REFERENCES ICode (ICode),
   FOREIGN KEY (Issue_idIssue) REFERENCES Issue (idIssue),
-  FOREIGN KEY (Editor_User_idEditor) REFERENCES Editor (User_idEditor),
-  FOREIGN KEY (Author_User_idAuthor) REFERENCES Author (User_idAuthor)
+  FOREIGN KEY (Editor_Users_idEditor) REFERENCES Editor (Users_idEditor),
+  FOREIGN KEY (Author_Users_idAuthor) REFERENCES Author (Users_idAuthor)
 );
 
 
@@ -137,7 +137,7 @@ CREATE TABLE Manuscript (
 -- Table REVIEW
 -- -----------------------------------------------------
 CREATE TABLE Review (
-  Reviewer_User_idReviewer1 INT UNSIGNED NOT NULL,
+  Reviewer_Users_idReviewer INT UNSIGNED NOT NULL,
   Manuscript_idManuscript INT NOT NULL,
   AssignedTimestamp DATETIME NOT NULL,
   SubmittedTimestamp DATETIME NULL,
@@ -146,7 +146,7 @@ CREATE TABLE Review (
   MScore INT UNSIGNED NULL,
   EScore INT UNSIGNED NULL,
   Recommendation VARCHAR(45) NULL,
-  PRIMARY KEY (Reviewer_User_idReviewer1, Manuscript_idManuscript),
+  PRIMARY KEY (Reviewer_Users_idReviewer, Manuscript_idManuscript),
   FOREIGN KEY (Manuscript_idManuscript) REFERENCES Manuscript (idManuscript),
-  FOREIGN KEY (Reviewer_User_idReviewer1) REFERENCES Reviewer (User_idReviewer)
+  FOREIGN KEY (Reviewer_Users_idReviewer) REFERENCES Reviewer (Users_idReviewer)
 );
