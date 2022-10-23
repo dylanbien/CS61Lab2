@@ -21,14 +21,14 @@ CREATE VIEW LeadAuthorManuscripts AS
 DROP VIEW IF EXISTS AnyAuthorManuscripts;
 
 CREATE VIEW AnyAuthorManuscripts AS
-	SELECT CONCAT(FName, ' ', LName) as AuthorName, idUser, idManuscript, ManStatus
+	SELECT CONCAT(FName, ' ', LName) AS AuthorName, idUser, idManuscript, ManStatus
 		FROM Users
 		JOIN Author ON Users.idUser = Author.Users_idAuthor
 		JOIN Manuscript ON Author.Users_idAuthor = Manuscript.Author_Users_idAuthor
       
 	UNION
       
-	SELECT CoAuthor as AuthorName, idUser, idManuscript, ManStatus
+	SELECT CoAuthor AS AuthorName, idUser, idManuscript, ManStatus
 		FROM Users
 		JOIN Author ON Users.idUser = Author.Users_idAuthor
 		RIGHT JOIN (
@@ -38,7 +38,10 @@ CREATE VIEW AnyAuthorManuscripts AS
 				REPLACE(CONCAT('["', CoAuthors, '"]'),  ', ', '","'), '$[*]' COLUMNS (CoAuthor VARCHAR(50) PATH '$')
 			) AS CoAuthors
 		) AS Pivoted 
-        ON Pivoted.CoAuthor LIKE CONCAT('%', FName, ' ', LName,'%'); 
+        ON Pivoted.CoAuthor LIKE CONCAT('%', FName, ' ', LName,'%') 
+  
+  ORDER BY SUBSTRING_INDEX(AuthorName, " ", 1);
+
 
 -- -----------------------------------------------------
 -- View PublishedIssues (DONE)
@@ -46,10 +49,10 @@ CREATE VIEW AnyAuthorManuscripts AS
 DROP VIEW IF EXISTS PublishedIssues;
 
 CREATE VIEW PublishedIssues AS
-  SELECT SUBSTRING(idIssue, 1, 4)  as issueYear, SUBSTRING(idIssue, 6, 1) as issueNumber, Title, BeginningPage
-    from Issue 
-    LEFT JOIN Manuscript ON Issue.idIssue = Manuscript.Issue_idIssue
-    ORDER BY SUBSTRING(idIssue, 1, 4), SUBSTRING(idIssue, 6, 1), BeginningPage ASC;
+  SELECT SUBSTRING(idIssue, 1, 4) AS issueYear, SUBSTRING(idIssue, 6, 1) aASs issueNumber, Title, BeginningPage
+  FROM Issue 
+  LEFT JOIN Manuscript ON Issue.idIssue = Manuscript.Issue_idIssue
+  ORDER BY SUBSTRING(idIssue, 1, 4), SUBSTRING(idIssue, 6, 1), BeginningPage ASC;
 
 -- -----------------------------------------------------
 -- View ReviewQueue (DONE)
