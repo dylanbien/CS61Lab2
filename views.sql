@@ -54,16 +54,17 @@ CREATE VIEW PublishedIssues AS
 -- -----------------------------------------------------
 -- View ReviewQueue (DONE)
 -- -----------------------------------------------------
+
 DROP VIEW IF EXISTS ReviewQueue;
 
 CREATE VIEW ReviewQueue AS
-  Select CONCAT(FName, ' ', LName) as PrimaryAuthor, idUser, idManuscript, AllReviewers.Reviewers
+  Select CONCAT(FName, ' ', LName) AS PrimaryAuthor, idUser, idManuscript, AllReviewers.Reviewers
   FROM Users
   INNER JOIN Author ON Users.idUser = Author.Users_idAuthor
-  INNER JOIN Manuscript on Author.Users_idAuthor = Manuscript.Author_Users_idAuthor 
+  INNER JOIN Manuscript ON Author.Users_idAuthor = Manuscript.Author_Users_idAuthor 
   LEFT JOIN 
     ( -- Combine reviewers for a single manuscript
-        SELECT Manuscript_idManuscript, GROUP_CONCAT(FName, ' ', LName SEPARATOR ', ') as Reviewers
+        SELECT Manuscript_idManuscript, GROUP_CONCAT(FName, ' ', LName SEPARATOR ', ') AS Reviewers
           FROM Users
           INNER JOIN Reviewer ON Users.idUser = Reviewer.Users_idReviewer
           INNER JOIN Review ON Review.Reviewer_Users_idReviewer = Reviewer.Users_idReviewer
@@ -76,15 +77,17 @@ CREATE VIEW ReviewQueue AS
 -- -----------------------------------------------------
 -- View WhatsLeft
 -- -----------------------------------------------------
+
 CREATE VIEW WhatsLeft AS
   SELECT idManuscript, ManStatus, StatusTimestamp
-  FROM Manuscript;
-
+  FROM Manuscript
+  WHERE ManStatus != 'rejected' AND ManStatus != 'published';
 
 
 -- -----------------------------------------------------
 -- View ReviewStatus
 -- -----------------------------------------------------
+
 DROP FUNCTION IF EXISTS ViewRevId;
 DELIMITER $$
 CREATE FUNCTION ViewRevId() RETURNS integer
