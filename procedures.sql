@@ -12,9 +12,9 @@ BEGIN
         group by Manuscript.idManuscript
       ) < 30
       THEN
-      SET result = 'Rejected';
+      SET result = 'rejected';
     ELSE
-    SET result = 'Accepted';
+    SET result = 'accepted';
     END IF;
 
  RETURN (lvl);
