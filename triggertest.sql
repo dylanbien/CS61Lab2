@@ -1,30 +1,38 @@
 ------------------------------------------------------
--- Test Trigger (1) after_author_deleted
+-- Test Trigger (1) before_manuscript_insert
 -------------------------------------------------------
 
--- Insert a manuscript with valid Icode
--- Then query
+-- Only one reviewer is assigned ICode 102.
+INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, Editor_Users_idEditor) VALUES 
+('quis urna. Nunc quis arcu vel quam dignissim pharetra.',5,'Charde Carlson, Noelle Beach',102,2);
+SELECT * FROM Manuscript WHERE idManuscript = 27;
 
--- Insert a manusciript with an invalid Icode
+-- ICode 125 is not within Scope
+
+INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, Editor_Users_idEditor) VALUES 
+('augue ut lacus. Nulla tincidunt, neque',5,'Bianca Conway',125,1);
+SELECT * FROM Manuscript WHERE idManuscript = 28;
 
 ------------------------------------------------------
--- Test Trigger (2) before_manuscript_status_updated
+-- Test Trigger (2) after_reviewer_resigned
 -------------------------------------------------------
 
--- deletng a  User with no responose 
+-- Manuscript 19 has three reviewers, we delete two of its reviews, then delete its last reviewer. 
+-- Its status should revert to "received" since two other reviewers remain.
 
--- deleting a user to reverted
+DELETE FROM Review WHERE Manuscript_idManuscript = 19 AND Reviewer_Users_idReviewer != 8;
 DELETE FROM Users WHERE idUser = 8;
 
--- deleting a user to rejected
+-- Reviewer 8 was also the sole reviewer associated with ICode 102, so Manuscript 27 now has no reviewers.
+-- Its status should change to "rejected".
+
+SELECT * FROM Manuscript WHERE idManuscript = 19 OR idManuscript = 28.
 
 ------------------------------------------------------
 -- Test Trigger (3) before_manuscript_status_updated
 -------------------------------------------------------
 
--- Update a manuscript status
--- Then query
+-- Setting Manuscript 19's status to "accepted" should trigger it's status to auto-change to "in typesetting".
 
-UPDATE Manuscript SET ManStatus = 'Accepted' where idManuscript = 19;
-
-select * from Manuscript where idManuscript = 19;
+UPDATE Manuscript SET ManStatus = 'accepted' WHERE idManuscript = 19;
+SELECT * FROM Manuscript WHERE idManuscript = 19;

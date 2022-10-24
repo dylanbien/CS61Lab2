@@ -71,9 +71,9 @@ SQL code that creates the following triggers:
 2. **after_reviewer_resigned** which sets a manuscript's status to "rejected" if its sole possible reviewer resigns, or reverts its status to "received" if its sole reviewer resigns, but there are other reviewers available associated with its ICode.
 3. **before_manuscript_status_updated** which automatically sets a manuscript's status to "in typesetting" once it has been "accepted".
 
-### triggerstest.sql
+### triggertest.sql
 
-SQL code that tests the above triggers.
+SQL code that tests the above triggers. NOTE: Must run **insert.sql** before running **triggertest.sql**.
 
 ### procedures.sql
 
