@@ -1,6 +1,6 @@
 
 -- -----------------------------------------------------
--- View ICodeNumReviewers 
+-- View ICodeNumReviewers, to be used in Triggers (1) and (2)
 -- -----------------------------------------------------
 
 DROP VIEW IF EXISTS ICodeNumReviewers;
@@ -13,11 +13,14 @@ CREATE VIEW ICodeNumReviewers AS
 	GROUP BY ICode;
 
 -- -----------------------------------------------------
--- Trigger after_manuscript_insert
+-- Trigger (1) before_manuscript_insert
 -- -----------------------------------------------------
 
-CREATE TRIGGER after_manuscript_insert
-    AFTER INSERT ON Manuscript
+DROP TRIGGER IF EXISTS before_manuscript_insert;
+
+DELIMITER $$
+CREATE TRIGGER before_manuscript_insert
+    BEFORE INSERT ON Manuscript
     FOR EACH ROW 
     BEGIN
 		IF (NEW.ICode_ICode NOT IN (SELECT ICode_ICode FROM ICodeNumReviewers)) 
@@ -26,36 +29,17 @@ CREATE TRIGGER after_manuscript_insert
         SET @msg = concat('LAB2: No reviewers for manuscript id ', cast(idManuscript as char), ', notified author via email');
 			  signal sqlstate '45000' set message_text = @msg;
 
-    END IF$$
+    END IF;
+    END$$
 DELIMITER ;
 
 
 -- -----------------------------------------------------
--- Trigger after_reviewer_resigned
--- Rejects manuscript and throws errors if no reviewer with the required ICode is available
+-- Trigger (2) after_reviewer_resigned
+-- Rejects manuscript if no reviewer with the required ICode is available, or reverts status to received if is
 -- -----------------------------------------------------
 
-DROP TRIGGER IF EXISTS after_status_updated;
 DROP TRIGGER IF EXISTS after_reviewer_resigned;
-
-DELIMITER $$
-CREATE TRIGGER after_status_updated
-    AFTER UPDATE ON Manuscript
-    FOR EACH ROW 
-    BEGIN
-		IF (NEW.ManStatus = 'rejected') 
-		THEN
-			SET @msg = concat('LAB2: No reviewers for manuscript id ', cast(NEW.idManuscript as char), ', notified author via email');
-			signal sqlstate '45000' set message_text = @msg;
-		END IF;
-     
-		IF (NEW.ManStatus = 'received') 
-		THEN
-			SET @msg = concat('LAB2: Reviewer for manuscript id ', cast(NEW.idManuscript as char), ' resigned, status reverted to received');
-			signal sqlstate '45000' set message_text = @msg;
-		END IF;
-    END$$
-DELIMITER $$;
 
 DELIMITER $$
 CREATE TRIGGER after_reviewer_resigned
@@ -84,8 +68,9 @@ CREATE TRIGGER after_reviewer_resigned
 END$$
 DELIMITER ;
 
+
 -- -----------------------------------------------------
--- Trigger before_manuscript_status_updated
+-- Trigger (3) before_manuscript_status_updated
 -- -----------------------------------------------------
 
 DROP TRIGGER IF EXISTS before_manuscript_status_updated;
@@ -97,5 +82,6 @@ CREATE TRIGGER before_manuscript_status_updated
 	  IF NEW.ManStatus = 'accepted' THEN
 	    SET NEW.ManStatus = 'in typesetting';
 	  END IF;
+
 END$$
 DELIMITER ;
