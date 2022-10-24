@@ -25,7 +25,7 @@ INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, Ed
 ('quis urna. Nunc quis arcu vel quam dignissim pharetra.',5,'Charde Carlson, Noelle Beach',102,2);
 
 INSERT INTO Review (Reviewer_Users_idReviewer, Manuscript_idManuscript, AssignedTimestamp) VALUES
-(8,27,'2020-03-04 19:26:41');
+(8,29,'2020-03-04 19:26:41');
 
 -- Once we delete Reviewer 8, Manuscript 19's status should revert to "received" since two other reviewers remain.
 -- Reviewer 8 was also the sole reviewer associated with ICode 102, so Manuscript 29 now has no reviewers, and its status changes to "rejected".
