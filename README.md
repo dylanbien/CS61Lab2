@@ -76,7 +76,7 @@ This file is blank, as all necessary setup is done by running the **insert.sql**
 
 SQL code that creates the following triggers:
 
-1. **before_manuscript_insert** which sets a manuscript's status to "rejected" if there are no reviewers associated with its ICode, and **after_manuscript_insert** which raises an exception and notifies the author if the manuscript has been auto-rejected.
+1. **before_manuscript_insert** which sets a manuscript's status to "rejected" if there are no reviewers associated with its ICode, and **after_manuscript_insert** which raises an exception and notifies the author if the manuscript has been auto-rejected. This exception prevents the manuscript from being inserted into the table.
 2. **after_reviewer_resigned** which sets a manuscript's status to "rejected" if its sole possible reviewer resigns, or reverts its status to "received" if its sole reviewer resigns, but there are other reviewers available associated with its ICode. 
 3. **before_manuscript_status_updated** which automatically sets a manuscript's status to "in typesetting" once it has been "accepted".
 
@@ -89,7 +89,7 @@ SQL code that tests the above triggers.
 
 Notes: 
 - Must run **insert.sql** before running **triggertest.sql**.
-- **triggertest.sql** should be run line-by-line, since some of the tests cause exceptions.
+- **triggertest.sql** should be run line-by-line, since some of the tests cause exceptions, or check the "Continue SQL script execution on errors (by default)" box under the SQL Execution tab in MySQLWorkbench preferences.
 - Line 33, which deletes a row from the *Users* table, required us to uncheck the "Safe Updates" box under the SQL Editor tab in MySQLWorkbench preferences. 
 
 ### procedures.sql
