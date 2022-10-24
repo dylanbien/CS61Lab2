@@ -1,67 +1,101 @@
+
 -- -----------------------------------------------------
--- View IcodeNumReviewers 
+-- View ICodeNumReviewers 
 -- -----------------------------------------------------
 
-DROP VIEW IF EXISTS IcodeNumReviewers;
+DROP VIEW IF EXISTS ICodeNumReviewers;
 
-CREATE VIEW IcodeNumReviewers AS
-    Select  ICode, count(*) as reviewerCount 
+CREATE VIEW ICodeNumReviewers AS
+  SELECT ICode_ICode, count(*) as ReviewerCount 
 	FROM ICode
 	JOIN ReviewerGroup on ICode.ICode = ReviewerGroup.ICode_ICode
 	JOIN Reviewer on Reviewer.Users_idReviewer = ReviewerGroup.Reviewer_Users_idReviewer
 	GROUP BY ICode;
 
 -- -----------------------------------------------------
--- Trigger after_new_manuscript_submitted 
+-- Trigger after_manuscript_insert
 -- -----------------------------------------------------
 
-CREATE TRIGGER before_manuscript_submit
-    BEFORE INSERT ON Manuscript
+CREATE TRIGGER after_manuscript_insert
+    AFTER INSERT ON Manuscript
     FOR EACH ROW 
-		IF (ICodeId NOT IN (select ICode from IcodeNumReviewers)) 
+    BEGIN
+		IF (NEW.ICode_ICode NOT IN (SELECT ICode_ICode FROM ICodeNumReviewers)) 
 			THEN
-             set @msg = concat('LAB2: No reviewers for manuscript id ', cast(idManuscript as char));
-			 signal sqlstate '45000' set message_text = @msg;
+        SET NEW.ManStatus = 'rejected';
+        SET @msg = concat('LAB2: No reviewers for manuscript id ', cast(idManuscript as char), ', notified author via email');
+			  signal sqlstate '45000' set message_text = @msg;
 
     END IF$$
 DELIMITER ;
 
+
 -- -----------------------------------------------------
--- Trigger after_author_deleted
+-- Trigger after_reviewer_resigned
 -- Rejects manuscript and throws errors if no reviewer with the required ICode is available
 -- -----------------------------------------------------
 
---get manuscript to number of reviewers iwth same icode
+DROP TRIGGER IF EXISTS after_status_updated;
+DROP TRIGGER IF EXISTS after_reviewer_resigned;
 
 DELIMITER $$
+CREATE TRIGGER after_status_updated
+    AFTER UPDATE ON Manuscript
+    FOR EACH ROW 
+    BEGIN
+		IF (NEW.ManStatus = 'rejected') 
+		THEN
+			SET @msg = concat('LAB2: No reviewers for manuscript id ', cast(NEW.idManuscript as char), ', notified author via email');
+			signal sqlstate '45000' set message_text = @msg;
+		END IF;
+     
+		IF (NEW.ManStatus = 'received') 
+		THEN
+			SET @msg = concat('LAB2: Reviewer for manuscript id ', cast(NEW.idManuscript as char), ' resigned, status reverted to received');
+			signal sqlstate '45000' set message_text = @msg;
+		END IF;
+    END$$
+DELIMITER $$;
 
-DROP TRIGGER IF EXISTS after_author_deleted;
+DELIMITER $$
+CREATE TRIGGER after_reviewer_resigned
+    BEFORE DELETE ON Users
+    FOR EACH ROW
+    BEGIN
+      
+      UPDATE Manuscript SET ManStatus = 'received', StatusTimestamp = NOW() WHERE 
+      (
+        idManuscript IN (SELECT Manuscript_idManuscript FROM Review WHERE Reviewer_Users_idReviewer = OLD.idUser AND SubmittedTimestamp IS NULL)
+        AND
+        idManuscript NOT IN (SELECT Manuscript_idManuscript FROM Review WHERE Reviewer_Users_idReviewer != OLD.idUser)
+        AND
+        ICode_ICode IN (SELECT ICode_ICode FROM ICodeNumReviewers WHERE ReviewerCount > 1)
+      );
 
-CREATE TRIGGER after_author_deleted
-    AFTER DELETE ON Author
-    FOR EACH ROW BEGIN
+      UPDATE Manuscript SET ManStatus = 'rejected', StatusTimestamp = NOW() WHERE 
+      (
+        idManuscript IN (SELECT Manuscript_idManuscript FROM Review WHERE Reviewer_Users_idReviewer = OLD.idUser AND SubmittedTimestamp IS NULL)
+        AND
+        idManuscript NOT IN (SELECT Manuscript_idManuscript FROM Review WHERE Reviewer_Users_idReviewer != OLD.idUser)
+        AND
+        ICode_ICode NOT IN (SELECT ICode_ICode FROM ICodeNumReviewers WHERE ReviewerCount > 1)
+      );
 
-    INSERT INTO players_audit
-    SET action = 'delete',
-     pID = OLD.pID,
-        pName = OLD.pName,
-        changed_on = NOW();
 END$$
 DELIMITER ;
 
-
 -- -----------------------------------------------------
--- Trigger after_manuscript_updated
+-- Trigger before_manuscript_status_updated
 -- -----------------------------------------------------
 
-DROP TRIGGER IF EXISTS before_manuscript_updated;
+DROP TRIGGER IF EXISTS before_manuscript_status_updated;
 DELIMITER $$
-CREATE TRIGGER before_manuscript_updated
+CREATE TRIGGER before_manuscript_status_updated
   BEFORE UPDATE ON Manuscript
   FOR EACH ROW 
   BEGIN
-	  IF NEW.ManStatus = 'Accepted' THEN
-	    SET NEW.ManStatus = 'TypeSetting';
+	  IF NEW.ManStatus = 'accepted' THEN
+	    SET NEW.ManStatus = 'in typesetting';
 	  END IF;
-	END$$
+END$$
 DELIMITER ;
