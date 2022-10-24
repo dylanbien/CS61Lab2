@@ -16,8 +16,8 @@ SELECT @decisionRejected;
 -- Query Validation
 -- -----------------------------------------------------
 
-select idManuscript, Reviewer_Users_idReviewer, avg(AScore + CScore + MScore + EScore) as AverageTotalScore
-	from Manuscript 
-	INNER JOIN Review on Manuscript.idManuscript = Review.Manuscript_idManuscript
-	where idManuscript in (2,18)
-	group by idManuscript, Reviewer_Users_idReviewer;
+SELECT idManuscript, Reviewer_Users_idReviewer, AVG(AScore + CScore + MScore + EScore) AS AverageTotalScore
+	FROM Manuscript 
+	INNER JOIN Review ON Manuscript.idManuscript = Review.Manuscript_idManuscript
+	WHERE idManuscript IN (2,18)
+	GROUP BY idManuscript, Reviewer_Users_idReviewer;

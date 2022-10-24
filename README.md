@@ -22,12 +22,15 @@ SQL code for creating the following tables in the MySQL database:
 - **ICode**
 - **Scope**
 - **Users**
-- **Editors**
-- **Authors**
-- **Reviewers**
+- **Editor**
+- **Author**
+- **Reviewer**
 - **ReviewerGroup**, a helper table that links Reviewers to ICodes
-- **Manuscripts**
-- **Reviews**
+- **Manuscript**, which has the check constraint that ManStatus is valid, among "received", "under review", "accepted", "rejected", "in typesetting", "ready", "scheduled for publication", "published", and that the issue containing the manuscript has no more than 100 pages.
+- **Review**, which has the check constraints that A-, C-, M-, and E-Scores are between 1 and 10, and that Recommendation is either "accept" or "reject".
+
+Note:
+- There are several places within the domain and problem statement where the default manuscript status is referred to as "received", and other places where it is referred to as "submitted". We've taken these terms to represent equivalent states and made the choice to use only "received" for consistency purposes.
 
 ### insert.sql
 
@@ -73,17 +76,25 @@ This file is blank, as all necessary setup is done by running the **insert.sql**
 
 SQL code that creates the following triggers:
 
-1. **before_manuscript_insert** which sets a manuscript's status to "rejected" if there are no reviewers associated with its ICode.
-2. **after_reviewer_resigned** which sets a manuscript's status to "rejected" if its sole possible reviewer resigns, or reverts its status to "received" if its sole reviewer resigns, but there are other reviewers available associated with its ICode.
+1. **before_manuscript_insert** which sets a manuscript's status to "rejected" if there are no reviewers associated with its ICode, and **after_manuscript_insert** which raises an exception and notifies the author if the manuscript has been auto-rejected.
+2. **after_reviewer_resigned** which sets a manuscript's status to "rejected" if its sole possible reviewer resigns, or reverts its status to "received" if its sole reviewer resigns, but there are other reviewers available associated with its ICode. 
 3. **before_manuscript_status_updated** which automatically sets a manuscript's status to "in typesetting" once it has been "accepted".
+
+Notes: 
+- For a Reviewer to resign, their ID must be removed from the **Users** table, which will cause the user to be deleted from the **Reviewer** table (as well as any associated rows in the **Review** and **ReviewerGroup** tables) via ON DELETE CASCADE. We borrowed this tactic from the following site: https://www.sqlshack.com/delete-cascade-and-update-cascade-in-sql-server-foreign-key/.
 
 ### triggertest.sql
 
-SQL code that tests the above triggers. NOTE: Must run **insert.sql** before running **triggertest.sql**.
+SQL code that tests the above triggers. 
+
+Notes: 
+- Must run **insert.sql** before running **triggertest.sql**.
+- **triggertest.sql** should be run line-by-line, since some of the tests cause exceptions.
+- Line 33, which deletes a row from the *Users* table, required us to uncheck the "Safe Updates" box under the SQL Editor tab in MySQLWorkbench preferences. 
 
 ### procedures.sql
 
-SQL code for setting up the procedure to accept/reject based on average review score.
+SQL code for setting up the procedure to output an accept/reject decision based on a manuscript's average review score.
 
 ### procedurestest.sql
 

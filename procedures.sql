@@ -2,15 +2,15 @@ SET @reject_score = 30;
 
 DROP PROCEDURE IF EXISTS DocumentDecision;
 DELIMITER $$
-CREATE PROCEDURE DocumentDecision(IN manuscriptID int, OUT result varchar(10))
+CREATE PROCEDURE DocumentDecision(IN manuscriptID INT, OUT result VARCHAR(10))
 	BEGIN
 
     IF 
-      (select avg(AScore + CScore + MScore + EScore) as AverageScore
-        from Manuscript 
-        INNER JOIN Review on Manuscript.idManuscript = Review.Manuscript_idManuscript
-        where manuscriptID = Manuscript.idManuscript
-        group by Manuscript.idManuscript
+      (SELECT AVG(AScore + CScore + MScore + EScore) AS AverageScore
+        FROM Manuscript 
+        INNER JOIN Review ON Manuscript.idManuscript = Review.Manuscript_idManuscript
+        WHERE manuscriptID = Manuscript.idManuscript
+        GROUP BY Manuscript.idManuscript
       ) < @reject_score
     THEN
       SET result = 'rejected';

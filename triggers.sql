@@ -13,10 +13,11 @@ CREATE VIEW ICodeNumReviewers AS
 	GROUP BY ICode;
 
 -- -----------------------------------------------------
--- Trigger (1) before_manuscript_insert
+-- Trigger (1) before_manuscript_insert and after_manuscript_insert
 -- -----------------------------------------------------
 
 DROP TRIGGER IF EXISTS before_manuscript_insert;
+DROP TRIGGER IF EXISTS after_manuscript_insert;
 
 DELIMITER $$
 CREATE TRIGGER before_manuscript_insert
@@ -26,13 +27,22 @@ CREATE TRIGGER before_manuscript_insert
 		IF (NEW.ICode_ICode NOT IN (SELECT ICode_ICode FROM ICodeNumReviewers)) 
 			THEN
         SET NEW.ManStatus = 'rejected';
-        SET @msg = concat('LAB2: No reviewers for manuscript id ', cast(idManuscript as char), ', notified author via email');
-			  signal sqlstate '45000' set message_text = @msg;
-
     END IF;
     END$$
 DELIMITER ;
 
+DELIMITER $$
+CREATE TRIGGER after_manuscript_insert
+    AFTER INSERT ON Manuscript
+    FOR EACH ROW 
+    BEGIN
+		IF (NEW.ManStatus = 'rejected') THEN
+        SET @msg = concat('LAB2: No reviewers for manuscript id ', cast(NEW.idManuscript AS CHAR), ', notified author via email');
+			  SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg;
+
+    END IF;
+    END$$
+DELIMITER ;
 
 -- -----------------------------------------------------
 -- Trigger (2) after_reviewer_resigned
