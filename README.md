@@ -59,6 +59,8 @@ SQL code that creates the following views:
 - **WhatsLeft** which displays all manuscripts that have not been "published" or "rejected".
 - **ReviewStatus** which displays all reviews assigned to a given reviewer that have not yet been "submitted".
 
+We referenced the following website in the **AnyAuthorManuscripts** view: https://stackoverflow.com/questions/39906435/convert-json-array-in-mysql-to-rows
+
 ### triggersetup.sql
 
 This file is blank, as all necessary setup is done by running the **insert.sql** file.
@@ -77,4 +79,8 @@ SQL code that tests the above triggers. NOTE: Must run **insert.sql** before run
 
 ### procedures.sql
 
+SQL code for setting up the procedure to accept/reject based on average review score.
+
 ### procedurestest.sql
+
+SQL code that tests the above procedures (both an acceptance and a rejection).
