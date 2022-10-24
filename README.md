@@ -57,11 +57,13 @@ SQL code that creates the following views:
 - **PublishedIssues** which displays the manuscripts in all published issues of the journal.
 - **ReviewQueue** which displays all manuscripts with an "under review" status.
 - **WhatsLeft** which displays all manuscripts that have not been "published" or "rejected".
-- **ReviewStatus** which displays all reviews assigned to a given reviewer that have not yet been "submitted".
+- **ReviewStatus** which displays all reviews assigned to a given reviewer that have been "submitted".
 
-Note: For all relevant tables, we took "increasing timestamp" to mean most recent timestamp first.
-
-We referenced the following website in the **ReviewQueue** view: https://stackoverflow.com/questions/17942508/sql-split-values-to-multiple-rows
+Notes: 
+- For all relevant tables, we took "increasing timestamp" to mean most recent timestamp first.
+- We referenced the following website in the **AnyAuthorManuscripts** view: https://stackoverflow.com/questions/17942508/sql-split-values-to-multiple-rows
+- It is unclear where the **ReviewQueue** would be needed in the **ReviewStatus** view. To filter out any unsubmitted reviews by a given reviewer, we checked for a NULL SubmissionTimestamp. This question was asked but not answered in Slack, hence we interpreted this as we saw fit.
+- We have introduced a variable @rev_id to represent the reviewer's ID which is being queried for the **ReviewStatus** view. We have hard-coded this value to be 8, but any of the IDs among {7, 8, 9, 10} represent reviewers from our *insert.sql* file and may be tested accordingly.
 
 ### triggersetup.sql
 
