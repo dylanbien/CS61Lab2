@@ -120,7 +120,7 @@ CREATE TABLE Manuscript (
   CoAuthors VARCHAR(280) NULL,
   ICode_ICode INT NOT NULL,
   ManStatus VARCHAR(45) NOT NULL DEFAULT 'received',
-  StatusTimestamp DATETIME NOT NULL DEFAULT (GETDATE()),
+  StatusTimestamp DATETIME NOT NULL DEFAULT (NOW()),
   Editor_Users_idEditor INT UNSIGNED NULL,
   Issue_idIssue VARCHAR(6) NULL,
   NumPages INT UNSIGNED NULL,

@@ -1,11 +1,9 @@
-/*
-select the schema
-*/
 use F003WX1_db;
 
 -- -----------------------------------------------------
 -- View LeadAuthorManuscripts (DONE)
 -- -----------------------------------------------------
+
 DROP VIEW IF EXISTS LeadAuthorManuscripts;
 
 CREATE VIEW LeadAuthorManuscripts AS
@@ -18,6 +16,7 @@ CREATE VIEW LeadAuthorManuscripts AS
 -- -----------------------------------------------------
 -- View AnyAuthorManuscripts (DONE)
 -- -----------------------------------------------------
+
 DROP VIEW IF EXISTS AnyAuthorManuscripts;
 
 CREATE VIEW AnyAuthorManuscripts AS
@@ -46,6 +45,7 @@ CREATE VIEW AnyAuthorManuscripts AS
 -- -----------------------------------------------------
 -- View PublishedIssues (DONE)
 -- -----------------------------------------------------
+
 DROP VIEW IF EXISTS PublishedIssues;
 
 CREATE VIEW PublishedIssues AS
@@ -81,6 +81,7 @@ CREATE VIEW ReviewQueue AS
 -- View WhatsLeft
 -- -----------------------------------------------------
 
+DROP VIEW IF EXISTS WhatsLeft
 CREATE VIEW WhatsLeft AS
   SELECT idManuscript, ManStatus, StatusTimestamp
   FROM Manuscript
