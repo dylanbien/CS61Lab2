@@ -1,6 +1,3 @@
-use F003WX1_db;
-
-
 
 -- -------------------------
 -- JOURNAL, ISSUES, & ICODES
@@ -194,7 +191,7 @@ INSERT INTO Review (Reviewer_Users_idReviewer, Manuscript_idManuscript, Assigned
 
 INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, ManStatus, StatusTimestamp, Editor_Users_idEditor) VALUES 
 ('Quisque nonummy',5,'Odysseus Hutchinson',81,'under review','2023-05-01 05:20:15',2),
-('Nam ligula elit, pretium et, rutrum',5,'Amal Varga, Eagan Zamora',44,'under review','2022-05-02 12:05:50',1);
+('Nam ligula elit, pretium et, rutrum',5,'Amal Vargas, Eagan Zamora',44,'under review','2022-05-02 12:05:50',1);
 
 INSERT INTO Review (Reviewer_Users_idReviewer, Manuscript_idManuscript, AssignedTimestamp) VALUES
 (7,19,'2023-05-01 05:20:15'),(8,19,'2023-05-01 05:20:15'),(10,19,'2023-05-01 05:20:15'),
@@ -204,7 +201,7 @@ INSERT INTO Review (Reviewer_Users_idReviewer, Manuscript_idManuscript, Assigned
 -- auto-rejected manuscripts (ICode does not have enough Reviewers, ICode outside Scope) -- 
 
 INSERT INTO Manuscript (Title, Author_Users_idAuthor, CoAuthors, ICode_ICode, ManStatus, StatusTimestamp, Editor_Users_idEditor) VALUES 
-('risus. Nunc ac sem ut dolor dapibus gravida',5,'Eagan Zamora, Charde Carlson, Bianca Conway, Noelle Beach, Amal Varga',23,'rejected','2023-01-01 00:56:19',1),
+('risus. Nunc ac sem ut dolor dapibus gravida',5,'Eagan Zamora, Charde Carlson, Bianca Conway, Noelle Beach, Amal Vargas',23,'rejected','2023-01-01 00:56:19',1),
 ('amet diam eu dolor egestas rhoncus. Proin nisl sem,',6,'Dalton Combs, Price Lopez',125,'rejected','2022-11-17 05:50:31',2);
 
 

@@ -1,5 +1,5 @@
 /*
-select the schema
+select the database
 */
 use F003WX1_db;
 
@@ -98,7 +98,6 @@ CREATE TABLE Reviewer (
   FOREIGN KEY (Users_idReviewer) REFERENCES Users (idUser) ON DELETE CASCADE
   );
 
-
 -- -----------------------------------------------------
 -- Table REVIEWERGROUP
 -- -----------------------------------------------------
@@ -125,13 +124,14 @@ CREATE TABLE Manuscript (
   Issue_idIssue VARCHAR(6) NULL,
   NumPages INT UNSIGNED NULL,
   BeginningPage INT UNSIGNED NULL,
+  CONSTRAINT ManStatus_Valid CHECK (ManStatus IN ('received', 'under review', 'accepted', 'rejected', 'in typesetting', 'ready', 'scheduled for publication', 'published')),
+  CONSTRAINT PageLimit CHECK (NumPages + BeginningPage - 1 <= 100),
   PRIMARY KEY (idManuscript),
   FOREIGN KEY (ICode_ICode) REFERENCES ICode (ICode),
   FOREIGN KEY (Issue_idIssue) REFERENCES Issue (idIssue),
   FOREIGN KEY (Editor_Users_idEditor) REFERENCES Editor (Users_idEditor),
   FOREIGN KEY (Author_Users_idAuthor) REFERENCES Author (Users_idAuthor)
 );
-
 
 -- -----------------------------------------------------
 -- Table REVIEW
@@ -146,6 +146,11 @@ CREATE TABLE Review (
   MScore INT UNSIGNED NULL,
   EScore INT UNSIGNED NULL,
   Recommendation VARCHAR(45) NULL,
+  CONSTRAINT AScore_Range CHECK (AScore >= 1 AND AScore <= 10),
+  CONSTRAINT CScore_Range CHECK (CScore >= 1 AND CScore <= 10),
+  CONSTRAINT MScore_Range CHECK (MScore >= 1 AND MScore <= 10),
+  CONSTRAINT EScore_Range CHECK (EScore >= 1 AND EScore <= 10),
+  CONSTRAINT Recommendation_Valid CHECK (Recommendation IN ('accept', 'reject')),
   PRIMARY KEY (Reviewer_Users_idReviewer, Manuscript_idManuscript),
   FOREIGN KEY (Manuscript_idManuscript) REFERENCES Manuscript (idManuscript),
   FOREIGN KEY (Reviewer_Users_idReviewer) REFERENCES Reviewer (Users_idReviewer) ON DELETE CASCADE

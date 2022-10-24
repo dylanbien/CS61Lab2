@@ -1,7 +1,7 @@
 use F003WX1_db;
 
 -- -----------------------------------------------------
--- View LeadAuthorManuscripts (DONE)
+-- View LeadAuthorManuscripts
 -- -----------------------------------------------------
 
 DROP VIEW IF EXISTS LeadAuthorManuscripts;
@@ -14,20 +14,21 @@ CREATE VIEW LeadAuthorManuscripts AS
     ORDER BY LName, idUser, StatusTimestamp DESC;
     
 -- -----------------------------------------------------
--- View AnyAuthorManuscripts (DONE)
+-- View AnyAuthorManuscripts
 -- -----------------------------------------------------
 
 DROP VIEW IF EXISTS AnyAuthorManuscripts;
 
 CREATE VIEW AnyAuthorManuscripts AS
-	SELECT CONCAT(FName, ' ', LName) AS AuthorName, idUser, idManuscript, ManStatus
+SELECT AuthorName, idUser, idManuscript, ManStatus FROM (
+	SELECT CONCAT(FName, ' ', LName) AS AuthorName, idUser, idManuscript, ManStatus, StatusTimestamp
 		FROM Users
 		JOIN Author ON Users.idUser = Author.Users_idAuthor
 		JOIN Manuscript ON Author.Users_idAuthor = Manuscript.Author_Users_idAuthor
       
 	UNION
       
-	SELECT CoAuthor AS AuthorName, idUser, idManuscript, ManStatus
+	SELECT CoAuthor AS AuthorName, idUser, idManuscript, ManStatus, StatusTimestamp
 		FROM Users
 		JOIN Author ON Users.idUser = Author.Users_idAuthor
 		RIGHT JOIN (
@@ -39,11 +40,11 @@ CREATE VIEW AnyAuthorManuscripts AS
 		) AS Pivoted 
         ON Pivoted.CoAuthor LIKE CONCAT('%', FName, ' ', LName,'%') 
   
-  ORDER BY SUBSTRING_INDEX(AuthorName, " ", 1);
-
+	ORDER BY SUBSTRING_INDEX(AuthorName, ' ', -1), StatusTimestamp DESC
+) AnyAuthorManuscripts;
 
 -- -----------------------------------------------------
--- View PublishedIssues (DONE)
+-- View PublishedIssues
 -- -----------------------------------------------------
 
 DROP VIEW IF EXISTS PublishedIssues;
@@ -51,11 +52,11 @@ DROP VIEW IF EXISTS PublishedIssues;
 CREATE VIEW PublishedIssues AS
   SELECT SUBSTRING(idIssue, 1, 4) AS issueYear, SUBSTRING(idIssue, 6, 1) AS issueNumber, Title, BeginningPage
   FROM Issue 
-  LEFT JOIN Manuscript ON Issue.idIssue = Manuscript.Issue_idIssue
+  JOIN Manuscript ON Issue.idIssue = Manuscript.Issue_idIssue AND Manuscript.ManStatus = 'published'
   ORDER BY SUBSTRING(idIssue, 1, 4), SUBSTRING(idIssue, 6, 1), BeginningPage ASC;
 
 -- -----------------------------------------------------
--- View ReviewQueue (DONE)
+-- View ReviewQueue
 -- -----------------------------------------------------
 
 DROP VIEW IF EXISTS ReviewQueue;
@@ -76,7 +77,6 @@ CREATE VIEW ReviewQueue AS
   WHERE ManStatus = 'under review'
   ORDER BY StatusTimestamp DESC;
 
-
 -- -----------------------------------------------------
 -- View WhatsLeft
 -- -----------------------------------------------------
@@ -88,12 +88,12 @@ CREATE VIEW WhatsLeft AS
   FROM Manuscript
   WHERE ManStatus != 'rejected' AND ManStatus != 'published';
 
-
 -- -----------------------------------------------------
 -- View ReviewStatus
 -- -----------------------------------------------------
 
 DROP FUNCTION IF EXISTS ViewRevId;
+
 DELIMITER $$
 CREATE FUNCTION ViewRevId() RETURNS integer
     DETERMINISTIC
@@ -102,12 +102,13 @@ BEGIN
 END$$
 DELIMITER ;
 
-SET @rev_id = 7;
-
 DROP VIEW IF EXISTS ReviewStatus;
+
 CREATE VIEW ReviewStatus AS
   SELECT AssignedTimestamp, Manuscript.idManuscript, Title, AScore, CScore, MScore, EScore, Recommendation
   FROM Manuscript
   INNER JOIN Review ON Review.Manuscript_idManuscript = Manuscript.idManuscript
-  WHERE Reviewer_Users_idReviewer = ViewRevId() AND Manuscript.idManuscript NOT IN ( SELECT idManuscript from ReviewQueue )
+  WHERE Reviewer_Users_idReviewer = ViewRevId() AND Recommendation IS NOT NULL
   ORDER BY SubmittedTimestamp DESC;
+  
+SET @rev_id = 8; -- For testing purposes, our Reviewers have IDs {7, 8, 9, 10}

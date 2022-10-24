@@ -59,7 +59,9 @@ SQL code that creates the following views:
 - **WhatsLeft** which displays all manuscripts that have not been "published" or "rejected".
 - **ReviewStatus** which displays all reviews assigned to a given reviewer that have not yet been "submitted".
 
-We referenced the following website in the **AnyAuthorManuscripts** view: https://stackoverflow.com/questions/39906435/convert-json-array-in-mysql-to-rows
+Note: For all relevant tables, we took "increasing timestamp" to mean most recent timestamp first.
+
+We referenced the following website in the **ReviewQueue** view: https://stackoverflow.com/questions/17942508/sql-split-values-to-multiple-rows
 
 ### triggersetup.sql
 
