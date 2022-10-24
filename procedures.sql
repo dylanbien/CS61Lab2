@@ -1,22 +1,21 @@
-DROP FUNCTION IF EXISTS DocumentDecision;
-DELIMITER $$
-CREATE FUNCTION DocumentDecision(manuscriptID integer) RETURNS VARCHAR(6)
-BEGIN
-    DECLARE result varchar(16);
+SET @reject_score = 30;
 
-    IF (
-      select avg(AScore + CScore + MScore + EScore) as AverageTotalScore
+DROP PROCEDURE IF EXISTS DocumentDecision;
+DELIMITER $$
+CREATE PROCEDURE DocumentDecision(IN manuscriptID int, OUT result varchar(10))
+	BEGIN
+
+    IF 
+      (select avg(AScore + CScore + MScore + EScore) as AverageScore
         from Manuscript 
-        INNER JOIN ReviewStatus on Manuscript.idManuscript = ReviewStatus.idManuscript
-        where @manuscriptID = Manuscript.idManuscript
+        INNER JOIN Review on Manuscript.idManuscript = Review.Manuscript_idManuscript
+        where manuscriptID = Manuscript.idManuscript
         group by Manuscript.idManuscript
-      ) < 30
-      THEN
+      ) < @reject_score
+    THEN
       SET result = 'rejected';
     ELSE
-    SET result = 'accepted';
+      SET result = 'accepted';
     END IF;
-
- RETURN (lvl);
-END$$
+  END$$
 DELIMITER ;
