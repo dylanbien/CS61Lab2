@@ -81,7 +81,8 @@ CREATE VIEW ReviewQueue AS
 -- View WhatsLeft
 -- -----------------------------------------------------
 
-DROP VIEW IF EXISTS WhatsLeft
+DROP VIEW IF EXISTS WhatsLeft;
+
 CREATE VIEW WhatsLeft AS
   SELECT idManuscript, ManStatus, StatusTimestamp
   FROM Manuscript
