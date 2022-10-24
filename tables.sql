@@ -73,7 +73,7 @@ CREATE TABLE Users (
 CREATE TABLE Editor (
   Users_idEditor INT UNSIGNED NOT NULL,
   PRIMARY KEY (Users_idEditor),
-  FOREIGN KEY (Users_idEditor) REFERENCES Users (idUser)
+  FOREIGN KEY (Users_idEditor) REFERENCES Users (idUser) ON DELETE CASCADE
 );
 
 -- -----------------------------------------------------
@@ -84,7 +84,7 @@ CREATE TABLE Author (
   Email VARCHAR(100) NOT NULL,
   Affiliation VARCHAR(45) NOT NULL,
   PRIMARY KEY (Users_idAuthor),
-  FOREIGN KEY (Users_idAuthor) REFERENCES Users(idUser)
+  FOREIGN KEY (Users_idAuthor) REFERENCES Users(idUser) ON DELETE CASCADE
 );
 
 -- -----------------------------------------------------
@@ -95,7 +95,7 @@ CREATE TABLE Reviewer (
   Email VARCHAR(100) NOT NULL,
   Affiliation VARCHAR(45) NOT NULL,
   PRIMARY KEY (Users_idReviewer),
-  FOREIGN KEY (Users_idReviewer) REFERENCES Users (idUser)
+  FOREIGN KEY (Users_idReviewer) REFERENCES Users (idUser) ON DELETE CASCADE
   );
 
 
@@ -107,7 +107,7 @@ CREATE TABLE ReviewerGroup (
   ICode_ICode INT NOT NULL,
   PRIMARY KEY (Reviewer_Users_idReviewer, ICode_ICode),
   FOREIGN KEY (ICode_ICode) REFERENCES ICode (ICode),
-  FOREIGN KEY (Reviewer_Users_idReviewer) REFERENCES Reviewer (Users_idReviewer)
+  FOREIGN KEY (Reviewer_Users_idReviewer) REFERENCES Reviewer (Users_idReviewer) ON DELETE CASCADE
 );
 
 -- -----------------------------------------------------
@@ -148,5 +148,5 @@ CREATE TABLE Review (
   Recommendation VARCHAR(45) NULL,
   PRIMARY KEY (Reviewer_Users_idReviewer, Manuscript_idManuscript),
   FOREIGN KEY (Manuscript_idManuscript) REFERENCES Manuscript (idManuscript),
-  FOREIGN KEY (Reviewer_Users_idReviewer) REFERENCES Reviewer (Users_idReviewer)
+  FOREIGN KEY (Reviewer_Users_idReviewer) REFERENCES Reviewer (Users_idReviewer) ON DELETE CASCADE
 );
