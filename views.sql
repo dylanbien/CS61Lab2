@@ -49,7 +49,7 @@ CREATE VIEW AnyAuthorManuscripts AS
 DROP VIEW IF EXISTS PublishedIssues;
 
 CREATE VIEW PublishedIssues AS
-  SELECT SUBSTRING(idIssue, 1, 4) AS issueYear, SUBSTRING(idIssue, 6, 1) aASs issueNumber, Title, BeginningPage
+  SELECT SUBSTRING(idIssue, 1, 4) AS issueYear, SUBSTRING(idIssue, 6, 1) AS issueNumber, Title, BeginningPage
   FROM Issue 
   LEFT JOIN Manuscript ON Issue.idIssue = Manuscript.Issue_idIssue
   ORDER BY SUBSTRING(idIssue, 1, 4), SUBSTRING(idIssue, 6, 1), BeginningPage ASC;
