@@ -50,7 +50,7 @@ def frontend():
        ## elif(command.split(' ')[0] == 'resign'):
        ##     loginUser(mycursor, command)
         elif command == 'done':
-           break
+            break
         else:
             print("Unknown command. Try again!")
 
