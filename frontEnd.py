@@ -1,7 +1,10 @@
-from mysql.connector import MySQLConnection, Error, errorcode, FieldType
+from atexit import register
 from dbconfig import read_db_config
 import getpass
-
+from commands.register import registerUser
+from commands.login import loginUser
+from mysql.connector import MySQLConnection, Error, errorcode, FieldType
+## from commands.resign import resignUser
 
 def frontend():
 
@@ -11,7 +14,7 @@ def frontend():
         dbconfig['password'] = getpass.getpass("database password ? :")
     
     print(dbconfig)
-        
+    
     # Connect to the database
     try:
         print('Connecting to MySQL database...')
@@ -36,11 +39,20 @@ def frontend():
 
 
     while True:
-        command = input("Welcome. What would you like to do: ").lower()
-        if command == 'done':
-            break
+        command = input("Welcome. What would you like to do?: ")
 
+        userID = None
 
+        if(command.split(' ')[0] == 'register'):
+            registerUser(mycursor, command)
+        elif(command.split(' ')[0] == 'login'):
+            loginUser(mycursor, command)
+       ## elif(command.split(' ')[0] == 'resign'):
+       ##     loginUser(mycursor, command)
+        elif command == 'done':
+           break
+        else:
+            print("Unknown command. Try again!")
 
     mycursor.close()
     conn.cmd_reset_connection()
