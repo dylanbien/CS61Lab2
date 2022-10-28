@@ -46,9 +46,9 @@ def frontend():
         userID = None
 
         if(command.split(' ')[0] == 'register'):
-            registerUser(mycursor, command)
+            user,userID = registerUser(mycursor, command)
         elif(command.split(' ')[0] == 'login'):
-            loginUser(mycursor, command)
+            user,userID = loginUser(mycursor, command)
         ##elif(command.split(' ')[0] == 'resign'):
           ## loginUser(mycursor, command)
 
