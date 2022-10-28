@@ -7,13 +7,13 @@ def loginUser(cursor, command):
 
   if len(params) != 2:
     print("error: incorrect number of params")
-    return
+    return None, None
   
   if(params[1].isdigit()):
       userId = params[1]
   else:
     print("error: bad userId")
-    return
+    return None, None
 
   query = "SELECT * FROM Users WHERE idUser = {};".format(userId)
   cursor.execute(query)
@@ -21,7 +21,7 @@ def loginUser(cursor, command):
 
   if(len(results) != 1):
     print("error: user not registered")
-    return
+    return None, None
 
   fname = results[0][1]
   lname = results[0][2]
@@ -51,7 +51,7 @@ def loginUser(cursor, command):
       
       if (len(results) != 1):
         print("error: user not registered")
-        return
+        return None, None
 
       print("You are a reviewer!")
 
