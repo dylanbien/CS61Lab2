@@ -37,6 +37,8 @@ def frontend():
             print(err)
             sys.exit(1)
 
+    user = None
+    userID = None
 
     while True:
         command = input("Welcome. What would you like to do?: ")
@@ -47,8 +49,15 @@ def frontend():
             registerUser(mycursor, command)
         elif(command.split(' ')[0] == 'login'):
             loginUser(mycursor, command)
-       ## elif(command.split(' ')[0] == 'resign'):
-       ##     loginUser(mycursor, command)
+        ##elif(command.split(' ')[0] == 'resign'):
+          ## loginUser(mycursor, command)
+
+        # Reviewer requests
+        elif(command.split(' ')[0] == 'reject'):
+          if(user != 'reviewer'):
+            print("Reviewier not logged in. Unable to reject a manuscript")
+          else:
+            print("Rejecting...")
         elif command == 'done':
             break
         else:
