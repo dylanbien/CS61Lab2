@@ -43,8 +43,6 @@ def frontend():
     while True:
         command = input("Welcome. What would you like to do?: ")
 
-        userID = None
-
         if(command.split(' ')[0] == 'register'):
             user,userID = registerUser(mycursor, command)
         elif(command.split(' ')[0] == 'login'):
