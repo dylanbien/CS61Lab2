@@ -46,5 +46,7 @@ def registerUser(cursor, command):
 
   
   query = "INSERT INTO `{}` (`fname`,`lname`) VALUES ('{}','{}');".format(params[1], fname, lname)
+  
+  return params[1], 2
 
   ## cursor.execute(query)
