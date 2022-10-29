@@ -1,5 +1,7 @@
 from mysql.connector import MySQLConnection, Error, errorcode, FieldType
-
+from commands.authorCommands import authorStatus
+from commands.editorCommands import editorStatus
+from commands.reviewerCommands import reviewerStatus
 
 def loginUser(cursor, command):
   
@@ -26,26 +28,31 @@ def loginUser(cursor, command):
   fname = results[0][1]
   lname = results[0][2]
 
-  query = "SELECT * FROM Author WHERE Users_idAuthor = {};".format(userId)
+  query = "SELECT * FROM Author WHERE Users_idAuthor = {};".format(userId)             # check if author
   cursor.execute(query)
   results = cursor.fetchall()
-  print(results)
 
   if(len(results) == 1):
+
     email = results[0][1]
-    print("You are an author!")
+    
+    print("\nAuthor login successful!")
+    print("User " + userId + ": " + fname + " " + lname + ", " + email + "\n")
 
   else: ## not author
-    query = "SELECT * FROM Editor WHERE Users_idEditor = {};".format(userId)
+
+    query = "SELECT * FROM Editor WHERE Users_idEditor = {};".format(userId)          # check if editor
     cursor.execute(query)
     results = cursor.fetchall()
 
     if (len(results) == 1):
-      print("You are an editor!")
+
+      print("\nEditor login successful!")
+      print("User " + userId + ": " + fname + " " + lname + "\n")
     
     else: ## must be reviewer
       
-      query = "SELECT * FROM Reviewer WHERE Users_idReviewer = {};".format(userId)
+      query = "SELECT * FROM Reviewer WHERE Users_idReviewer = {};".format(userId)    # check if reviewer
       cursor.execute(query)
       results = cursor.fetchall()
       
@@ -53,8 +60,10 @@ def loginUser(cursor, command):
         print("error: user not registered")
         return
 
-      print("You are a reviewer!")
+      print("\nReviewer login successful!")
+      print("User " + userId + ": " + fname + " " + lname + "\n")
 
+  return userId
 
 ## IF userId NOT IN (SELECT idUser FROM Users) THEN print("error: unregistered userId")
 ## IF userId IN (SELECT Users_idAuthor FROM Author) THEN 
