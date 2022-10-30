@@ -92,8 +92,8 @@ CREATE TABLE Author (
 -- -----------------------------------------------------
 CREATE TABLE Reviewer (
   Users_idReviewer INT UNSIGNED NOT NULL,
-  Email VARCHAR(100) NOT NULL,
-  Affiliation VARCHAR(45) NOT NULL,
+  Email VARCHAR(100) NULL,
+  Affiliation VARCHAR(45) NULL,
   PRIMARY KEY (Users_idReviewer),
   FOREIGN KEY (Users_idReviewer) REFERENCES Users (idUser) ON DELETE CASCADE
   );
