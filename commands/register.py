@@ -30,6 +30,8 @@ def registerUser(cursor, command):
 
     query = "INSERT INTO Author (Users_idAuthor, Email, Affiliation) VALUES ({},'{}','{}');".format(userID, email, affiliation)
     cursor.execute(query)
+
+    print("\nAuthor registration successful!")
   
   elif(params[1] == 'reviewer'):
     
@@ -72,19 +74,27 @@ def registerUser(cursor, command):
       query = "INSERT INTO ReviewerGroup (Reviewer_Users_idReviewer, ICode_ICode) VALUES ('{}','{}');".format(userID, code)
       cursor.execute(query)
 
-  elif(params[1] != 'editor'):
+    print("\nReviewer registration successful!")
+
+  elif(params[1] == 'editor'):
+    
+    query = "INSERT INTO Users (FName, LName) VALUES ('{}','{}');".format(fname, lname)
+    cursor.execute(query)
+
+    query = "SELECT LAST_INSERT_ID();"
+    cursor.execute(query)
+    userID = int(cursor.fetchall()[0][0])
+
+    query = "INSERT INTO Editor (Users_idEditor) VALUES ({});".format(userID)
+    cursor.execute(query)
+
+    print("\nEditor registration successful!")
+
+  else: 
     print("error: bad user type")
     return None, None, None
-  
-  query = "INSERT INTO Users (FName, LName) VALUES ('{}','{}');".format(fname, lname)
-  cursor.execute(query)
 
-  query = "SELECT LAST_INSERT_ID();"
-  cursor.execute(query)
-  userID = int(cursor.fetchall()[0][0])
-
-  query = "INSERT INTO Editor (Users_idEditor) VALUES ({});".format(userID)
-  cursor.execute(query)
-  
   name = fname + " " + lname
+  print("User " + str(userID) + ": " + name + "\n")
+
   return name, params[1], userID
