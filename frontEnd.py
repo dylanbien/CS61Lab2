@@ -8,6 +8,7 @@ from commands.reviewerCommand import reviewerUpdateManuscript, reviewerResign
 from commands.editorCommands import editorStatus, editorAssignManuscript, editorUpdateManuscript, editorSchedule, editorPublish
 from commands.reset import resetDatabase
 from mysql.connector import MySQLConnection, Error, errorcode, FieldType
+import sys
 
 def frontend():
 
@@ -49,9 +50,11 @@ def frontend():
   while True:
     
     if userID is None:
-      command = input("Welcome. What would you like to do?: ")
+      print("Welcome. What would you like to do?: ")
+      command = sys.stdin.readline()[:-1]
     else:
-      command = input("Welcome " + name + ". What would you like to do?: " )
+      print("Welcome " + name + ". What would you like to do?: ")
+      command = sys.stdin.readline()[:-1]
 
     if(command.split(' ')[0] == 'register'):
       name,user,userID = registerUser(mycursor, command)
