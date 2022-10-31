@@ -4,6 +4,7 @@ import getpass
 from commands.register import registerUser
 from commands.login import loginUser
 from commands.authorCommands import authorStatus
+from commands.resign import resignReviewer
 from commands.editorCommands import editorStatus
 from commands.reviewerCommands import reviewerStatus
 from mysql.connector import MySQLConnection, Error, errorcode, FieldType
@@ -93,11 +94,15 @@ def frontend():
                 elif (command.split(' ')[0] == 'accept'):
                     print("Recommending acceptance...")
                 elif (command == "resign"):
-                    print("Resigning...")
+                  resignReviewer(mycursor, userID)
+                  user, userID = None, None
+                  print("Thank you for your service.")
                 elif command == 'done':
                     break
                 else:
                     print("Unknown command. Try again!")
+            
+            
 
     mycursor.close()
     conn.cmd_reset_connection()
