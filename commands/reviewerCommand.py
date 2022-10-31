@@ -1,18 +1,13 @@
 from mysql.connector import MySQLConnection, Error, errorcode, FieldType
+import shlex
 
-def updateManuscript(cursor, command, userID):
+def updateManuscript(cursor, command, userID, status):
 
   params = shlex.split(command)
 
   if len(params) != 6:
     print("error: Incorrect number of params")
     return
-
-  if params[0] == 'accept' or params[0] == 'reject':
-    status = params[0]
-  else:
-    print("error: Incorrect status passed")
-
 
   if(params[1].isdigit()):
       manuscriptid = params[1]
@@ -29,16 +24,28 @@ def updateManuscript(cursor, command, userID):
     print("error: bad score")
     return
 
-  query = """
-          UPDATE Review 
-          SET ManStatus = '{}', AScore = {}, CScore = {}, MScore = {} , EScore = {}
-          WHERE Reviewer_Users_idReviewer = {} AND Manuscript_idManuscript = {}
-          """.format(status, ascore, cscore, mscore, escore, userID, manuscriptid)
+  # check manuscript is in reviewing status
+  query = "select ManStatus from Manuscript where idManuscript = {};".format(manuscriptid)
+  cursor.execute(query)
+  results = cursor.fetchall()
 
+  print(results[0][0])
+  if(results[0][0] != 'under review'):
+    print('Manuscript must be under review')
+    return
 
   # check manuscript is assigned to reviewer
-  # check manuscript is in reviewing status
+  query = "select * from Review where Reviewer_Users_idReviewer = {} AND Manuscript_idManuscript = {};".format(userID, manuscriptid)
+  cursor.execute(query)
+  results = cursor.fetchall()
 
+  if(results == None):
+      print('Manuscript must be assigned to the reviewer')
+      return
+
+  query = "UPDATE Review SET Recommendation = '{}', AScore = {}, CScore = {}, MScore = {} , EScore = {}, SubmittedTimestamp = NOW() WHERE Reviewer_Users_idReviewer = {} AND Manuscript_idManuscript = {};".format(status, ascore, cscore, mscore, escore, userID, manuscriptid)
+  cursor.execute(query)
+  
   return
 
 

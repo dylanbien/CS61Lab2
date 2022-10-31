@@ -5,7 +5,8 @@ from commands.register import registerUser
 from commands.login import loginUser
 from commands.resign import resignReviewer
 from commands.authorCommands import authorStatus, submit
-from commands.editorCommands import editorStatus
+from commands.reviewerCommand import updateManuscript
+# from commands.editorCommands import editorStatus
 from mysql.connector import MySQLConnection, Error, errorcode, FieldType
 ## from commands.resign import resignUser
 
@@ -89,9 +90,9 @@ def frontend():
         
             elif (user == "reviewer"):
                 if (command.split(' ')[0] == 'reject'):
-                    print("Recommending rejection...")
+                  updateManuscript(mycursor, command, userID, 'reject')
                 elif (command.split(' ')[0] == 'accept'):
-                    print("Recommending acceptance...")
+                  updateManuscript(mycursor, command, userID, 'accept')
                 elif (command == "resign"):
                   resignReviewer(mycursor, userID)
                   user, userID = None, None
