@@ -1,24 +1,6 @@
 import shlex
 
-def authorStatus(cursor, userId):
-
-    query = "SELECT idManuscript, ManStatus, StatusTimestamp FROM LeadAuthorManuscripts WHERE idUser = {};".format(userId)
-    cursor.execute(query)
-    results = cursor.fetchall()
-
-    print("\nManuscript ID\tStatus\t\t\t\tStatus Timestamp")
-    print("-------------------------------------------------------------------")
-
-    for row in results:
-      printRow = str(row[0]) + "\t\t" + row[1]
-      numSpaces = len("scheduled for publication") - len(row[1])
-      for i in range(numSpaces):
-        printRow += " "
-      printRow += "\t" + str(row[2])
-      print(printRow)
-    print()
-
-def submit(cursor, userId, command):
+def authorSubmit(cursor, userId, command):
 
   params = shlex.split(command)
   if len(params) < 5:
@@ -68,6 +50,31 @@ def submit(cursor, userId, command):
   query = "UPDATE Author SET Affiliation = '{}' WHERE Users_idAuthor = {};".format(affiliation, userId)
   cursor.execute(query)
 
+  query = "SELECT Reviewer_Users_idReviewer FROM ReviewerGroup WHERE ICode_ICode = {};".format(icode)
+  cursor.execute(query)
+  if (cursor.rowcount < 3):
+    print("error: not enough reviewers, manuscript auto-rejected, author notified via email")
+    return
+
   print("\nManuscript submission successful!")
   print("Manuscript " + str(manID) + ": " + title + "\n")
+  return
+
+def authorStatus(cursor, userId):
+
+    query = "SELECT idManuscript, ManStatus, StatusTimestamp FROM LeadAuthorManuscripts WHERE idUser = {};".format(userId)
+    cursor.execute(query)
+    results = cursor.fetchall()
+
+    print("\nManuscript ID\tStatus\t\t\t\tStatus Timestamp")
+    print("-------------------------------------------------------------------")
+
+    for row in results:
+      printRow = str(row[0]) + "\t\t" + row[1]
+      numSpaces = len("scheduled for publication") - len(row[1])
+      for i in range(numSpaces):
+        printRow += " "
+      printRow += "\t" + str(row[2])
+      print(printRow)
+    print()
   

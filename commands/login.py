@@ -1,4 +1,5 @@
 from mysql.connector import MySQLConnection, Error, errorcode, FieldType
+from commands.reviewerCommand import reviewerStatus
 import shlex
 
 def loginUser(cursor, command):
@@ -66,5 +67,7 @@ def loginUser(cursor, command):
 
       print("\nReviewer login successful!")
       print("User " + userId + ": " + name + "\n")
+
+      reviewerStatus(cursor, userId)
 
   return name, user, userId

@@ -3,42 +3,23 @@
 -- Trigger (1) before_manuscript_insert and after_manuscript_insert
 -- -----------------------------------------------------
 
-DROP TRIGGER IF EXISTS before_manuscript_insert;
-DROP TRIGGER IF EXISTS after_manuscript_insert;
-
 DELIMITER $$
 CREATE TRIGGER before_manuscript_insert
 BEFORE INSERT ON Manuscript
 FOR EACH ROW BEGIN
-	IF (NEW.ICode_ICode NOT IN (SELECT ICode_ICode FROM ReviewerGroup)) THEN
+	IF ((SELECT COUNT(*) FROM ReviewerGroup WHERE ICode_ICode = NEW.ICode_ICode) < 3) THEN
     SET NEW.ManStatus = 'rejected';
   END IF;
 END$$
-DELIMITER ;
 
-DELIMITER $$
 CREATE TRIGGER after_manuscript_insert
 AFTER INSERT ON Manuscript
 FOR EACH ROW BEGIN
 	IF (NEW.ManStatus = 'rejected') THEN
-    SET @msg = concat('LAB2: No reviewers for manuscript id ', cast(NEW.idManuscript AS CHAR), ', notified author via email');
+    SET @msg = concat('LAB2: Not enough reviewers for manuscript id ', cast(NEW.idManuscript AS CHAR), ', notified author via email');
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = @msg;
   END IF;
 END$$
-DELIMITER ;
-
--- -----------------------------------------------------
--- View ICodeNumReviewers, to be used in Trigger (2)
--- -----------------------------------------------------
-
-DROP VIEW IF EXISTS ICodeNumReviewers;
-
-CREATE VIEW ICodeNumReviewers AS
-  SELECT ICode_ICode, count(*) as ReviewerCount 
-	FROM ICode
-	JOIN ReviewerGroup on ICode.ICode = ReviewerGroup.ICode_ICode
-	JOIN Reviewer on Reviewer.Users_idReviewer = ReviewerGroup.Reviewer_Users_idReviewer
-	GROUP BY ICode;
 
 
 -- -----------------------------------------------------
@@ -46,9 +27,6 @@ CREATE VIEW ICodeNumReviewers AS
 -- Rejects manuscript if no reviewer with the required ICode is available, or reverts status to received if is
 -- -----------------------------------------------------
 
-DROP TRIGGER IF EXISTS after_reviewer_resigned;
-
-DELIMITER $$
 CREATE TRIGGER after_reviewer_resigned
 BEFORE DELETE ON Users
 FOR EACH ROW BEGIN
@@ -70,16 +48,11 @@ FOR EACH ROW BEGIN
     ICode_ICode NOT IN (SELECT ICode_ICode FROM ICodeNumReviewers WHERE ReviewerCount > 1)
   );        
 END$$
-DELIMITER ;
-
 
 -- -----------------------------------------------------
 -- Trigger (3) before_manuscript_status_updated
 -- -----------------------------------------------------
 
-DROP TRIGGER IF EXISTS before_manuscript_status_updated;
-
-DELIMITER $$
 CREATE TRIGGER before_manuscript_status_updated
 BEFORE UPDATE ON Manuscript
 FOR EACH ROW BEGIN
@@ -87,4 +60,3 @@ FOR EACH ROW BEGIN
 	  SET NEW.ManStatus = 'in typesetting';
 	END IF;
 END$$
-DELIMITER ;

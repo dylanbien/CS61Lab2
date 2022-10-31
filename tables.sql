@@ -32,7 +32,6 @@ CREATE TABLE Journal (
 CREATE TABLE Issue (
   idIssue VARCHAR(6) NOT NULL,
   Journal_idJournal INT UNSIGNED NOT NULL,
-  NumPages INT UNSIGNED NOT NULL,
   NextPage INT UNSIGNED NOT NULL DEFAULT 1,
   PublicationDate DATETIME NULL,
   PRIMARY KEY (idIssue),
@@ -141,7 +140,7 @@ CREATE TABLE Manuscript (
 CREATE TABLE Review (
   Reviewer_Users_idReviewer INT UNSIGNED NOT NULL,
   Manuscript_idManuscript INT NOT NULL,
-  AssignedTimestamp DATETIME NOT NULL,
+  AssignedTimestamp DATETIME NOT NULL DEFAULT (NOW()),
   SubmittedTimestamp DATETIME NULL,
   AScore INT UNSIGNED NULL,
   CScore INT UNSIGNED NULL,
