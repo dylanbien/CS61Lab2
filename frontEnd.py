@@ -5,8 +5,8 @@ from commands.register import registerUser
 from commands.login import loginUser
 from commands.resign import resignReviewer
 from commands.authorCommands import authorStatus, submit
-from commands.reviewerCommand import updateManuscript
-# from commands.editorCommands import editorStatus
+from commands.reviewerCommand import revewerUpdateManuscript
+from commands.editorCommands import editorStatus, editorAssignManuscript, editorUpdateManuscript, editorSchedule, editorPublish, editorReset
 from mysql.connector import MySQLConnection, Error, errorcode, FieldType
 ## from commands.resign import resignUser
 
@@ -74,15 +74,15 @@ def frontend():
                 if (command == "status"):
                     editorStatus(mycursor)
                 elif (command.split(' ')[0] == 'assign'):
-                    print("Assigning manuscript...")
+                    editorAssignManuscript(mycursor, command)
                 elif (command.split(' ')[0] == 'reject'):
-                    print("Rejecting manuscript...")
+                    editorUpdateManuscript(mycursor, command, 'reject')
                 elif (command.split(' ')[0] == 'accept'):
-                    print("Accepting manuscript...")
+                    editorUpdateManuscript(mycursor, command, 'accept')
                 elif (command.split(' ')[0] == 'schedule'):
-                    print("Scheduling manuscript...")
+                    editorSchedule(mycursor, command)
                 elif (command.split(' ')[0] == 'publish'):
-                    print("Publishing issue...")
+                  editorPublish(mycursor, command)
                 elif (command == "done"):
                     break
                 else:
@@ -90,9 +90,9 @@ def frontend():
         
             elif (user == "reviewer"):
                 if (command.split(' ')[0] == 'reject'):
-                  updateManuscript(mycursor, command, userID, 'reject')
+                  revewerUpdateManuscript(mycursor, command, userID, 'reject')
                 elif (command.split(' ')[0] == 'accept'):
-                  updateManuscript(mycursor, command, userID, 'accept')
+                  revewerUpdateManuscript(mycursor, command, userID, 'accept')
                 elif (command == "resign"):
                   resignReviewer(mycursor, userID)
                   user, userID = None, None

@@ -1,7 +1,7 @@
 from mysql.connector import MySQLConnection, Error, errorcode, FieldType
 import shlex
 
-def updateManuscript(cursor, command, userID, status):
+def revewerUpdateManuscript(cursor, command, userID, status):
 
   params = shlex.split(command)
 
