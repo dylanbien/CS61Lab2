@@ -4,7 +4,7 @@ import getpass
 from commands.register import registerUser
 from commands.login import loginUser
 from commands.authorCommands import authorStatus, authorSubmit
-from commands.reviewerCommand import reviewerUpdateManuscript, reviewerResign
+from commands.reviewerCommands import reviewerUpdateManuscript, reviewerResign
 from commands.editorCommands import editorStatus, editorAssignManuscript, editorUpdateManuscript, editorSchedule, editorPublish
 from commands.reset import resetDatabase
 from mysql.connector import MySQLConnection, Error, errorcode, FieldType
