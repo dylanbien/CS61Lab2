@@ -32,7 +32,9 @@ CREATE TABLE Journal (
 CREATE TABLE Issue (
   idIssue VARCHAR(6) NOT NULL,
   Journal_idJournal INT UNSIGNED NOT NULL,
-  PublicationDate DATETIME,
+  NumPages INT UNSIGNED NOT NULL,
+  NextPage INT UNSIGNED NOT NULL DEFAULT 1,
+  PublicationDate DATETIME NULL,
   PRIMARY KEY (idIssue),
   FOREIGN KEY (Journal_idJournal) REFERENCES Journal (idJournal)
 );

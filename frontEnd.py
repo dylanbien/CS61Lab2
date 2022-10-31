@@ -3,10 +3,9 @@ from dbconfig import read_db_config
 import getpass
 from commands.register import registerUser
 from commands.login import loginUser
-from commands.authorCommands import authorStatus
 from commands.resign import resignReviewer
+from commands.authorCommands import authorStatus, submit
 from commands.editorCommands import editorStatus
-from commands.reviewerCommands import reviewerStatus
 from mysql.connector import MySQLConnection, Error, errorcode, FieldType
 ## from commands.resign import resignUser
 
@@ -33,7 +32,7 @@ def frontend():
     except mysql.connector.Error as err:
         print('connection failed somehow')
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print("Something is wrong with your user name or password")
+            print("Something is wrong with your username or password")
         elif err.errno == errorcode.ER_BAD_DB_ERROR:
             print("Database does not exist")
         else:
@@ -64,7 +63,7 @@ def frontend():
                 if (command == "status"):
                     authorStatus(mycursor, userID)
                 elif (command.split(' ')[0] == 'submit'):
-                    print("Submitting manuscript...")
+                    submit(mycursor, userID, command)
                 elif (command == "done"):
                     break
                 else:

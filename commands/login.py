@@ -1,7 +1,4 @@
 from mysql.connector import MySQLConnection, Error, errorcode, FieldType
-from commands.authorCommands import authorStatus
-from commands.editorCommands import editorStatus
-from commands.reviewerCommands import reviewerStatus
 import shlex
 
 def loginUser(cursor, command):
